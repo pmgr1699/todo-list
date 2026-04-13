@@ -15,9 +15,13 @@ class Task extends Model
         'completed' => 'boolean',
     ];
 
-    // Relação com o utilizador
     public function user()
     {
         return $this->belongsTo(User::class);
+    }
+
+    public function labels()
+    {
+        return $this->belongsToMany(Label::class);
     }
 }

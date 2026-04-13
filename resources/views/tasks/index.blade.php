@@ -21,6 +21,18 @@
                 <h5 class="font-medium {{ $task->completed ? 'line-through text-gray-400' : 'text-gray-800' }}">
                     {{ $task->title }}
                 </h5>
+
+                @if ($task->labels->count())
+                    <div class="flex flex-wrap gap-1 mt-1">
+                        @foreach ($task->labels as $label)
+                            <span class="px-2 py-0.5 rounded-full text-xs text-white"
+                                style="background-color: {{ $label->color }}">
+                                {{ $label->name }}
+                            </span>
+                        @endforeach
+                    </div>
+                @endif
+
                 @if ($task->description)
                     <p class="text-sm text-gray-500 mt-1">{{ $task->description }}</p>
                 @endif

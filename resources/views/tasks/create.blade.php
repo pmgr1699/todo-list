@@ -26,6 +26,24 @@
                 @enderror
             </div>
 
+            @if ($labels->count())
+                <div class="mb-6">
+                    <label class="block text-sm font-medium text-gray-700 mb-2">Labels</label>
+                    <div class="flex flex-wrap gap-2">
+                        @foreach ($labels as $label)
+                            <label class="flex items-center gap-2 cursor-pointer">
+                                <input type="checkbox" name="labels[]" value="{{ $label->id }}" class="rounded"
+                                    {{ in_array($label->id, old('labels', [])) ? 'checked' : '' }}>
+                                <span class="inline-flex items-center gap-1 px-2 py-1 rounded-full text-xs text-white"
+                                    style="background-color: {{ $label->color }}">
+                                    {{ $label->name }}
+                                </span>
+                            </label>
+                        @endforeach
+                    </div>
+                </div>
+            @endif
+
             <div class="flex gap-3">
                 <button type="submit" class="px-4 py-2 bg-blue-600 text-white text-sm rounded hover:bg-blue-700">
                     Guardar

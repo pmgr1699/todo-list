@@ -9,13 +9,14 @@ class TaskController extends Controller
 {
     public function index()
     {
-        $tasks = auth()->user()->tasks()->latest()->paginate(10);
+        $tasks = auth()->user()->tasks()->with('labels')->latest()->paginate(10);
         return view('tasks.index', compact('tasks'));
     }
 
     public function create()
     {
-        return view('tasks.create');
+        $labels = auth()->user()->labels()->get();
+        return view('tasks.create', compact('labels'));
     }
 
     public function store(Request $request)
@@ -23,9 +24,12 @@ class TaskController extends Controller
         $request->validate([
             'title'       => 'required|min:3|max:255',
             'description' => 'nullable|max:1000',
+            'labels'      => 'nullable|array',
+            'labels.*'    => 'exists:labels,id',
         ]);
 
-        auth()->user()->tasks()->create($request->only('title', 'description'));
+        $task = auth()->user()->tasks()->create($request->only('title', 'description'));
+        $task->labels()->sync($request->input('labels', []));
 
         return redirect()->route('tasks.index')
             ->with('success', 'Tarefa criada com sucesso!');
@@ -34,7 +38,8 @@ class TaskController extends Controller
     public function edit(Task $task)
     {
         $this->authorize($task);
-        return view('tasks.edit', compact('task'));
+        $labels = auth()->user()->labels()->get();
+        return view('tasks.edit', compact('task', 'labels'));
     }
 
     public function update(Request $request, Task $task)
@@ -44,6 +49,8 @@ class TaskController extends Controller
         $request->validate([
             'title'       => 'required|min:3|max:255',
             'description' => 'nullable|max:1000',
+            'labels'      => 'nullable|array',
+            'labels.*'    => 'exists:labels,id',
         ]);
 
         $task->update([
@@ -51,6 +58,8 @@ class TaskController extends Controller
             'description' => $request->description,
             'completed'   => $request->has('completed'),
         ]);
+
+        $task->labels()->sync($request->input('labels', []));
 
         return redirect()->route('tasks.index')
             ->with('success', 'Tarefa atualizada!');
