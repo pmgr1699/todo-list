@@ -2,16 +2,15 @@
 
 @section('content')
     <div class="flex justify-between items-center mb-6">
-        <h1 class="text-2xl font-bold text-gray-800">🏷 Labels</h1>
+        <h1 class="text-2xl font-bold text-gray-800">🏷 Etiquetas</h1>
         <a href="{{ route('tasks.index') }}"
             class="px-4 py-2 text-sm border border-gray-300 rounded hover:bg-gray-50 text-gray-600">
             ← Voltar
         </a>
     </div>
 
-    {{-- Formulário de criação --}}
     <div class="bg-white rounded-lg shadow-sm border border-gray-200 p-6 mb-6">
-        <h2 class="text-base font-semibold text-gray-700 mb-4">Nova Label</h2>
+        <h2 class="text-base font-semibold text-gray-700 mb-4">Nova Etiqueta</h2>
         <form action="{{ route('labels.store') }}" method="POST" class="flex gap-3 items-end">
             @csrf
             <div class="flex-1">
@@ -57,7 +56,7 @@
                 </form>
 
                 <form action="{{ route('labels.destroy', $label) }}" method="POST"
-                    onsubmit="return confirm('Eliminar label?')">
+                    onsubmit="return confirm('Eliminar etiqueta?')">
                     @csrf
                     @method('DELETE')
                     <button class="px-3 py-1 text-sm border border-red-300 rounded text-red-600 hover:bg-red-50">
@@ -68,7 +67,7 @@
         </div>
     @empty
         <div class="bg-blue-50 border border-blue-200 text-blue-700 px-4 py-3 rounded">
-            Ainda não tens labels. Cria a primeira!
+            Ainda não tens etiquetas. Cria a primeira!
         </div>
     @endforelse
 @endsection
