@@ -1,35 +1,40 @@
 @extends('layouts.app')
 
 @section('content')
-    <div class="card mx-auto" style="max-width: 600px">
-        <div class="card-header"><h5 class="mb-0">Nova Tarefa</h5></div>
-        <div class="card-body">
-            <form action="{{ route('tasks.store') }}" method="POST">
-                @csrf
+    <div class="max-w-xl mx-auto bg-white rounded-lg shadow-sm border border-gray-200 p-6">
+        <h2 class="text-xl font-bold text-gray-800 mb-6">Nova Tarefa</h2>
 
-                <div class="mb-3">
-                    <label class="form-label">Título *</label>
-                    <input type="text" name="title" class="form-control @error('title') is-invalid @enderror"
-                           value="{{ old('title') }}">
-                    @error('title')
-                        <div class="invalid-feedback">{{ $message }}</div>
-                    @enderror
-                </div>
+        <form action="{{ route('tasks.store') }}" method="POST">
+            @csrf
 
-                <div class="mb-3">
-                    <label class="form-label">Descrição</label>
-                    <textarea name="description" rows="3"
-                              class="form-control @error('description') is-invalid @enderror">{{ old('description') }}</textarea>
-                    @error('description')
-                        <div class="invalid-feedback">{{ $message }}</div>
-                    @enderror
-                </div>
+            <div class="mb-4">
+                <label class="block text-sm font-medium text-gray-700 mb-1">Título *</label>
+                <input type="text" name="title"
+                    class="w-full border border-gray-300 rounded px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500 {{ $errors->has('title') ? 'border-red-400' : '' }}"
+                    value="{{ old('title') }}">
+                @error('title')
+                    <p class="text-red-500 text-xs mt-1">{{ $message }}</p>
+                @enderror
+            </div>
 
-                <div class="d-flex gap-2">
-                    <button type="submit" class="btn btn-primary">Guardar</button>
-                    <a href="{{ route('tasks.index') }}" class="btn btn-outline-secondary">Cancelar</a>
-                </div>
-            </form>
-        </div>
+            <div class="mb-6">
+                <label class="block text-sm font-medium text-gray-700 mb-1">Descrição</label>
+                <textarea name="description" rows="3"
+                    class="w-full border border-gray-300 rounded px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500 {{ $errors->has('description') ? 'border-red-400' : '' }}">{{ old('description') }}</textarea>
+                @error('description')
+                    <p class="text-red-500 text-xs mt-1">{{ $message }}</p>
+                @enderror
+            </div>
+
+            <div class="flex gap-3">
+                <button type="submit" class="px-4 py-2 bg-blue-600 text-white text-sm rounded hover:bg-blue-700">
+                    Guardar
+                </button>
+                <a href="{{ route('tasks.index') }}"
+                    class="px-4 py-2 border border-gray-300 text-gray-600 text-sm rounded hover:bg-gray-50">
+                    Cancelar
+                </a>
+            </div>
+        </form>
     </div>
 @endsection

@@ -1,26 +1,22 @@
 <!DOCTYPE html>
 <html lang="pt">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>To-Do List</title>
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    @vite(['resources/css/app.css', 'resources/js/app.js'])
 </head>
-<body class="bg-light">
 
-    <nav class="navbar navbar-dark bg-dark mb-4">
-        <div class="container">
-            <a class="navbar-brand" href="{{ route('tasks.index') }}">📝 To-Do List</a>
-        </div>
-    </nav>
+<body class="bg-gray-100 min-h-screen">
 
-    <div class="container">
+    @include('layouts.navigation')
 
-        {{-- Mensagens de sucesso --}}
+    <div class="max-w-4xl mx-auto px-4 py-8">
+
         @if (session('success'))
-            <div class="alert alert-success alert-dismissible fade show">
+            <div class="mb-4 bg-green-100 border border-green-400 text-green-700 px-4 py-3 rounded">
                 {{ session('success') }}
-                <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
             </div>
         @endif
 
@@ -28,6 +24,6 @@
 
     </div>
 
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
 </body>
+
 </html>

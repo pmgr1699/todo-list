@@ -1,57 +1,64 @@
 @extends('layouts.app')
 
 @section('content')
-    <div class="d-flex justify-content-between align-items-center mb-3">
-        <h1 class="h3">As minhas tarefas</h1>
-        <div class="d-flex gap-2">
-            <a href="{{ route('tasks.trashed') }}" class="btn btn-outline-secondary">🗑 Lixeira</a>
-            <a href="{{ route('tasks.create') }}" class="btn btn-primary">+ Nova tarefa</a>
+    <div class="flex justify-between items-center mb-6">
+        <h1 class="text-2xl font-bold text-gray-800">As minhas tarefas</h1>
+        <div class="flex gap-2">
+            <a href="{{ route('tasks.trashed') }}"
+                class="px-4 py-2 text-sm border border-gray-300 rounded hover:bg-gray-50 text-gray-600">
+                🗑 Lixeira
+            </a>
+            <a href="{{ route('tasks.create') }}" class="px-4 py-2 text-sm bg-blue-600 text-white rounded hover:bg-blue-700">
+                + Nova tarefa
+            </a>
         </div>
     </div>
 
     @forelse ($tasks as $task)
-        <div class="card mb-2 {{ $task->completed ? 'border-success' : '' }}">
-            <div class="card-body d-flex justify-content-between align-items-center">
+        <div
+            class="bg-white rounded-lg shadow-sm border {{ $task->completed ? 'border-green-300' : 'border-gray-200' }} mb-3 p-4 flex justify-between items-center">
+            <div>
+                <h5 class="font-medium {{ $task->completed ? 'line-through text-gray-400' : 'text-gray-800' }}">
+                    {{ $task->title }}
+                </h5>
+                @if ($task->description)
+                    <p class="text-sm text-gray-500 mt-1">{{ $task->description }}</p>
+                @endif
+            </div>
 
-                <div>
-                    <h5 class="mb-0 {{ $task->completed ? 'text-decoration-line-through text-muted' : '' }}">
-                        {{ $task->title }}
-                    </h5>
-                    @if ($task->description)
-                        <small class="text-muted">{{ $task->description }}</small>
-                    @endif
-                </div>
+            <div class="flex gap-2">
+                {{-- Conclusão rápida --}}
+                <form action="{{ route('tasks.toggle', $task) }}" method="POST">
+                    @csrf
+                    @method('PATCH')
+                    <button
+                        class="px-3 py-1 text-sm rounded border {{ $task->completed ? 'bg-green-500 text-white border-green-500' : 'border-green-500 text-green-600 hover:bg-green-50' }}">
+                        {{ $task->completed ? '✅ Concluída' : '⬜ Concluir' }}
+                    </button>
+                </form>
 
-                <div class="d-flex gap-2">
+                <a href="{{ route('tasks.edit', $task) }}"
+                    class="px-3 py-1 text-sm border border-gray-300 rounded text-gray-600 hover:bg-gray-50">
+                    ✏️ Editar
+                </a>
 
-                    {{-- Botão de conclusão rápida --}}
-                    <form action="{{ route('tasks.toggle', $task) }}" method="POST">
-                        @csrf
-                        @method('PATCH')
-                        <button class="btn btn-sm {{ $task->completed ? 'btn-success' : 'btn-outline-success' }}">
-                            {{ $task->completed ? '✅ Concluída' : '⬜ Concluir' }}
-                        </button>
-                    </form>
-
-                    <a href="{{ route('tasks.edit', $task) }}" class="btn btn-sm btn-outline-secondary">
-                        ✏️ Editar
-                    </a>
-
-                    <form action="{{ route('tasks.destroy', $task) }}" method="POST"
-                        onsubmit="return confirm('Tens a certeza?')">
-                        @csrf
-                        @method('DELETE')
-                        <button class="btn btn-sm btn-outline-danger">🗑 Apagar</button>
-                    </form>
-
-                </div>
+                <form action="{{ route('tasks.destroy', $task) }}" method="POST"
+                    onsubmit="return confirm('Tens a certeza?')">
+                    @csrf
+                    @method('DELETE')
+                    <button class="px-3 py-1 text-sm border border-red-300 rounded text-red-600 hover:bg-red-50">
+                        🗑 Apagar
+                    </button>
+                </form>
             </div>
         </div>
     @empty
-        <div class="alert alert-info">Ainda não tens tarefas. Cria a primeira!</div>
+        <div class="bg-blue-50 border border-blue-200 text-blue-700 px-4 py-3 rounded">
+            Ainda não tens tarefas. Cria a primeira!
+        </div>
     @endforelse
 
-    <div class="mt-3">
+    <div class="mt-4">
         {{ $tasks->links() }}
     </div>
 @endsection
