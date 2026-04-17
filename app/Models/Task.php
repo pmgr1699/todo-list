@@ -9,10 +9,12 @@ class Task extends Model
 {
     use SoftDeletes;
 
-    protected $fillable = ['title', 'description', 'completed', 'user_id'];
+    protected $fillable = ['title', 'description', 'completed', 'user_id', 'start_date', 'due_date'];
 
     protected $casts = [
-        'completed' => 'boolean',
+        'completed'  => 'boolean',
+        'start_date' => 'date',
+        'due_date'   => 'date',
     ];
 
     public function user()

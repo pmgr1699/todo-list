@@ -33,6 +33,18 @@
                     </div>
                 @endif
 
+                <div class="flex gap-3 mt-1 text-xs text-gray-400">
+                    @if ($task->start_date)
+                        <span>📅 Início: {{ $task->start_date->format('d/m/Y') }}</span>
+                    @endif
+                    @if ($task->due_date)
+                        <span
+                            class="{{ $task->due_date->isPast() && !$task->completed ? 'text-red-500 font-medium' : '' }}">
+                            ⏰ Deadline: {{ $task->due_date->format('d/m/Y') }}
+                        </span>
+                    @endif
+                </div>
+
                 @if ($task->description)
                     <p class="text-sm text-gray-500 mt-1">{{ $task->description }}</p>
                 @endif
