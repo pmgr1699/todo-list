@@ -1,3 +1,5 @@
+@php $task = $task ?? null; @endphp
+
 {{-- Informação básica --}}
 <div class="bg-white rounded-xl border border-gray-200 p-6 mb-4">
     <p class="text-xs font-medium text-gray-400 uppercase tracking-wide mb-4">Informação básica</p>
@@ -61,7 +63,7 @@
             </label>
             <input type="date" name="start_date"
                 class="w-full border border-gray-200 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-blue-400 focus:border-transparent"
-                value="{{ old('start_date', $task->start_date?->format('Y-m-d') ?? '') }}">
+                value="{{ old('start_date', $task?->start_date?->format('Y-m-d') ?? '') }}">
             @error('start_date')
                 <p class="text-red-500 text-xs mt-1">{{ $message }}</p>
             @enderror
@@ -70,7 +72,7 @@
             <label class="block text-sm font-medium text-gray-600 mb-1.5">Deadline</label>
             <input type="date" name="due_date"
                 class="w-full border border-gray-200 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-blue-400 focus:border-transparent"
-                value="{{ old('due_date', $task->due_date?->format('Y-m-d') ?? '') }}">
+                value="{{ old('due_date', $task?->due_date?->format('Y-m-d') ?? '') }}">
             @error('due_date')
                 <p class="text-red-500 text-xs mt-1">{{ $message }}</p>
             @enderror
@@ -79,7 +81,7 @@
 </div>
 
 {{-- Labels --}}
-@if ($labels->count())
+@if (isset($labels) && $labels->count())
     <div class="bg-white rounded-xl border border-gray-200 p-6 mb-4">
         <div class="flex justify-between items-center mb-4">
             <p class="text-xs font-medium text-gray-400 uppercase tracking-wide">Labels</p>
@@ -91,7 +93,7 @@
             @foreach ($labels as $label)
                 <label class="cursor-pointer">
                     <input type="checkbox" name="labels[]" value="{{ $label->id }}" class="sr-only peer"
-                        {{ in_array($label->id, old('labels', $task->labels->pluck('id')->toArray() ?? [])) ? 'checked' : '' }}>
+                        {{ in_array($label->id, old('labels', $task ? $task->labels->pluck('id')->toArray() : [])) ? 'checked' : '' }}>
                     <span
                         class="inline-flex items-center px-3 py-1.5 rounded-full text-xs border-2
                              text-gray-500 border-gray-200 transition-all"
@@ -105,7 +107,7 @@
 @endif
 
 {{-- Concluída (só aparece na edição) --}}
-@isset($task->id)
+@if ($task?->id)
     <div class="bg-white rounded-xl border border-gray-200 p-6 mb-4">
         <label class="flex items-center gap-3 cursor-pointer">
             <input type="checkbox" name="completed" class="w-4 h-4 rounded text-blue-600"
@@ -113,7 +115,7 @@
             <span class="text-sm font-medium text-gray-600">Marcar como concluída</span>
         </label>
     </div>
-@endisset
+@endif
 
 @pushOnce('scripts')
     <script>
