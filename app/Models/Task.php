@@ -9,7 +9,7 @@ class Task extends Model
 {
     use SoftDeletes;
 
-    protected $fillable = ['title', 'description', 'completed', 'user_id', 'start_date', 'due_date'];
+    protected $fillable = ['title', 'description', 'completed', 'user_id', 'start_date', 'due_date', 'priority'];
 
     protected $casts = [
         'completed'  => 'boolean',
@@ -25,5 +25,16 @@ class Task extends Model
     public function labels()
     {
         return $this->belongsToMany(Label::class);
+    }
+
+    public function priorityConfig(): array
+    {
+        return match ($this->priority) {
+            'low'    => ['label' => 'Baixa',   'color' => 'bg-gray-400',  'icon' => '🔽'],
+            'medium' => ['label' => 'Média',   'color' => 'bg-blue-500',  'icon' => '🔸'],
+            'high'   => ['label' => 'Alta',    'color' => 'bg-orange-500', 'icon' => '🔺'],
+            'urgent' => ['label' => 'Urgente', 'color' => 'bg-red-600',   'icon' => '🚨'],
+            default  => ['label' => 'Média',   'color' => 'bg-blue-500',  'icon' => '🔸'],
+        };
     }
 }

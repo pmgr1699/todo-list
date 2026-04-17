@@ -18,7 +18,12 @@ class TaskController extends Controller
 
     public function index()
     {
-        $tasks = $this->user()->tasks()->with('labels')->latest()->paginate(10);
+        $tasks = $this->user()->tasks()
+            ->with('labels')
+            ->orderByRaw("FIELD(priority, 'urgent', 'high', 'medium', 'low')")
+            ->latest()
+            ->paginate(10);
+
         return view('tasks.index', compact('tasks'));
     }
 
@@ -35,12 +40,13 @@ class TaskController extends Controller
             'description' => 'nullable|max:1000',
             'start_date'  => 'nullable|date',
             'due_date'    => 'nullable|date|after_or_equal:start_date',
+            'priority'    => 'required|in:low,medium,high,urgent',
             'labels'      => 'nullable|array',
             'labels.*'    => 'exists:labels,id',
         ]);
 
         $task = $this->user()->tasks()->create([
-            ...$request->only('title', 'description', 'due_date'),
+            ...$request->only('title', 'description', 'due_date', 'priority'),
             'start_date' => $request->filled('start_date')
                 ? $request->start_date
                 : now()->toDateString(),
@@ -61,6 +67,7 @@ class TaskController extends Controller
             'description' => 'nullable|max:1000',
             'start_date'  => 'nullable|date',
             'due_date'    => 'nullable|date|after_or_equal:start_date',
+            'priority'    => 'required|in:low,medium,high,urgent',
             'labels'      => 'nullable|array',
             'labels.*'    => 'exists:labels,id',
         ]);
@@ -69,6 +76,7 @@ class TaskController extends Controller
             'title'       => $request->title,
             'description' => $request->description,
             'completed'   => $request->has('completed'),
+            'priority'    => $request->priority,
             'start_date'  => $request->filled('start_date')
                 ? $request->start_date
                 : now()->toDateString(),
