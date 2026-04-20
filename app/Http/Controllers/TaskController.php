@@ -16,15 +16,57 @@ class TaskController extends Controller
         return $user;
     }
 
-    public function index()
+    public function index(Request $request)
     {
-        $tasks = $this->user()->tasks()
-            ->with('labels')
+        $query = $this->user()->tasks()->with('labels');
+
+        // Filtro de estado
+        if ($request->filled('status')) {
+            match ($request->status) {
+                'pending'   => $query->where('completed', false),
+                'completed' => $query->where('completed', true),
+                default     => null,
+            };
+        }
+
+        // Filtro de prioridade
+        if ($request->filled('priority')) {
+            $query->where('priority', $request->priority);
+        }
+
+        // Filtro de label
+        if ($request->filled('label')) {
+            $query->whereHas(
+                'labels',
+                fn($q) =>
+                $q->where('labels.id', $request->label)
+            );
+        }
+
+        // Filtro de deadline
+        if ($request->filled('deadline')) {
+            match ($request->deadline) {
+                'overdue'    => $query->where('due_date', '<', today())->where('completed', false),
+                'today'      => $query->whereDate('due_date', today()),
+                'this_week'  => $query->whereBetween('due_date', [today(), today()->endOfWeek()]),
+                default      => null,
+            };
+        }
+
+        // Filtro de data de início
+        if ($request->filled('start_date')) {
+            $query->whereDate('start_date', $request->start_date);
+        }
+
+        $tasks = $query
             ->orderByRaw("FIELD(priority, 'urgent', 'high', 'medium', 'low')")
             ->latest()
-            ->paginate(10);
+            ->paginate(10)
+            ->withQueryString(); // mantém filtros na paginação
 
-        return view('tasks.index', compact('tasks'));
+        $labels = $this->user()->labels()->get();
+
+        return view('tasks.index', compact('tasks', 'labels'));
     }
 
     public function create()
