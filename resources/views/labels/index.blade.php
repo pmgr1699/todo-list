@@ -60,7 +60,8 @@
                         <div class="flex items-center gap-3">
                             <span class="w-3 h-3 rounded-full flex-shrink-0"
                                 style="background-color: {{ $label->color }}"></span>
-                            <span class="text-sm font-medium text-gray-800">{{ $label->name }}</span>
+                            <span class="text-sm font-mediu"
+                                style="color: var(--color-text-primary)">{{ $label->name }}</span>
                             <span class="text-xs text-gray-400">{{ $label->tasks_count }} tarefa(s)</span>
                         </div>
 

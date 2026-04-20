@@ -97,7 +97,8 @@
                     <span
                         class="inline-flex items-center px-3 py-1.5 rounded-full text-xs border-2
                              text-gray-500 border-gray-200 transition-all"
-                        data-color="{{ $label->color }}">
+                        data-color="{{ $label->color }}"
+                        data-text-color="{{ $label->textColor() }}">
                         {{ $label->name }}
                     </span>
                 </label>
@@ -122,12 +123,13 @@
         document.querySelectorAll('input[name="labels[]"]').forEach(checkbox => {
             const span = checkbox.nextElementSibling;
             const color = span.dataset.color;
+            const textColor = span.dataset.textColor;
 
             function update() {
                 if (checkbox.checked) {
                     span.style.background = color;
                     span.style.borderColor = color;
-                    span.style.color = 'white';
+                    span.style.color = textColor;
                 } else {
                     span.style.background = '';
                     span.style.borderColor = '#e5e7eb';

@@ -46,8 +46,8 @@
                             {{ $priority['icon'] }} {{ $priority['label'] }}
                         </span>
                         @foreach ($task->labels as $label)
-                            <span class="px-2 py-0.5 rounded-full text-xs text-white"
-                                style="background-color: {{ $label->color }}">
+                            <span class="px-2 py-0.5 rounded-full text-xs"
+                                style="background-color: {{ $label->color }}; color: {{ $label->textColor() }}">
                                 {{ $label->name }}
                             </span>
                         @endforeach
