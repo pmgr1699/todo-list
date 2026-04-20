@@ -46,10 +46,10 @@ class TaskController extends Controller
         // Filtro de deadline
         if ($request->filled('deadline')) {
             match ($request->deadline) {
-                'overdue'    => $query->where('due_date', '<', today())->where('completed', false),
-                'today'      => $query->whereDate('due_date', today()),
-                'this_week'  => $query->whereBetween('due_date', [today(), today()->endOfWeek()]),
-                default      => null,
+                'overdue'   => $query->where('due_date', '<', today())->where('completed', false),
+                'today'     => $query->whereDate('due_date', today()),
+                'this_week' => $query->whereBetween('due_date', [today(), today()->endOfWeek()]),
+                default     => null,
             };
         }
 
@@ -58,11 +58,21 @@ class TaskController extends Controller
             $query->whereDate('start_date', $request->start_date);
         }
 
+        // Ordenação
+        match ($request->input('sort', 'priority')) {
+            'priority'   => $query->orderByRaw("FIELD(priority, 'urgent', 'high', 'medium', 'low')"),
+            'start_date' => $query->orderBy('start_date', $request->input('dir', 'asc')),
+            'title'      => $query->orderBy('title', 'asc'),
+            'completed'  => $query->orderBy('completed', $request->input('dir', 'asc')),
+            default      => $query->orderByRaw("FIELD(priority, 'urgent', 'high', 'medium', 'low')"),
+        };
+
+        // Secundária: mais recente primeiro em caso de empate
+        $query->latest();
+
         $tasks = $query
-            ->orderByRaw("FIELD(priority, 'urgent', 'high', 'medium', 'low')")
-            ->latest()
             ->paginate(10)
-            ->withQueryString(); // mantém filtros na paginação
+            ->withQueryString();
 
         $labels = $this->user()->labels()->get();
 

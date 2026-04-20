@@ -27,7 +27,7 @@
         {{-- Barra de filtros --}}
         <div class="bg-white rounded-xl border border-gray-200 p-5 mb-6">
             <form method="GET" action="{{ route('tasks.index') }}">
-                <div class="grid grid-cols-2 md:grid-cols-5 gap-3 mb-4">
+                <div class="grid grid-cols-2 md:grid-cols-6 gap-3 mb-4">
 
                     {{-- Estado --}}
                     <div>
@@ -98,6 +98,24 @@
                             class="w-full border border-gray-200 rounded-lg px-3 py-2 text-sm text-gray-600 focus:outline-none focus:ring-2 focus:ring-blue-400">
                     </div>
 
+                    {{-- Ordenação --}}
+                    <div>
+                        <label class="block text-xs font-medium text-gray-400 uppercase tracking-wide mb-1.5">Ordenar
+                            por</label>
+                        <select name="sort"
+                            class="w-full border border-gray-200 rounded-lg px-3 py-2 text-sm text-gray-600 focus:outline-none focus:ring-2 focus:ring-blue-400">
+                            <option value="priority" {{ request('sort', 'priority') === 'priority' ? 'selected' : '' }}>
+                                🔺 Prioridade</option>
+                            <option value="start_date" {{ request('sort') === 'start_date' ? 'selected' : '' }}>📅 Data de
+                                início
+                            </option>
+                            <option value="title" {{ request('sort') === 'title' ? 'selected' : '' }}>🔤
+                                Título (A-Z)</option>
+                            <option value="completed" {{ request('sort') === 'completed' ? 'selected' : '' }}>
+                                ✅ Estado</option>
+                        </select>
+                    </div>
+
                 </div>
 
                 {{-- Filtros ativos + botões --}}
@@ -132,6 +150,13 @@
                             <span
                                 class="inline-flex items-center gap-1 px-2 py-1 rounded-full text-xs bg-blue-50 text-blue-600">
                                 Início: {{ \Carbon\Carbon::parse(request('start_date'))->format('d/m/Y') }}
+                            </span>
+                        @endif
+                        @if (request('sort') && request('sort') !== 'priority')
+                            <span
+                                class="inline-flex items-center gap-1 px-2 py-1 rounded-full text-xs bg-purple-50 text-purple-600">
+                                Ordem:
+                                {{ ['start_date' => '📅 Data de início', 'title' => '🔤 Título (A-Z)', 'completed' => '✅ Estado'][request('sort')] }}
                             </span>
                         @endif
                     </div>
